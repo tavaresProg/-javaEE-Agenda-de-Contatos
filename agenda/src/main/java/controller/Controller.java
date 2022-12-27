@@ -88,9 +88,7 @@ public class Controller extends HttpServlet {
 	protected void listarContatos(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		System.out.println("listando contatos");
-		// Criando um objeto que irá receber os dados JavaBeans
 		ArrayList<JavaBeans> lista = dao.listarContatos();
-		// Encaminhar a lista ao documento agenda.jsp
 		request.setAttribute("contatos", lista);
 		RequestDispatcher rd = request.getRequestDispatcher("agenda.jsp");
 		rd.forward(request, response);
@@ -107,13 +105,10 @@ public class Controller extends HttpServlet {
 	protected void adicionarContato(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		System.out.println("criando contato");
-		// Setar as variáveis JavaBeans
 		contato.setNome(request.getParameter("nome"));
 		contato.setFone(request.getParameter("fone"));
 		contato.setEmail(request.getParameter("email"));
-		// invocar o metodo inserirContato passando o objeto contato
 		dao.inserirContato(contato);
-		// redirecionamento para agenda.jsp
 		response.sendRedirect("main");
 	}
 
@@ -125,19 +120,14 @@ public class Controller extends HttpServlet {
 	 * @throws ServletException the servlet exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	// Editar contato 1- Selecionar 2- Editar
 	protected void selecionarContato(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Setar a variável JavaBeans
 		contato.setIdcon(request.getParameter("idcon"));
-		// Executar o método selecionarContato (DAO)
 		dao.selecionarContato(contato);
-		// Setar os atributos do formulário com o conteúdo JavaBeans
 		request.setAttribute("idcon", contato.getIdcon());
 		request.setAttribute("nome", contato.getNome());
 		request.setAttribute("fone", contato.getFone());
 		request.setAttribute("email", contato.getEmail());
-		// Encaminhar ao documento editar.jsp
 		RequestDispatcher rd = request.getRequestDispatcher("editar.jsp");
 		rd.forward(request, response);
 	}
@@ -152,14 +142,11 @@ public class Controller extends HttpServlet {
 	 */
 	protected void editarContato(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Setar as variáveis JavaBeans
 		contato.setIdcon(request.getParameter("idcon"));
 		contato.setNome(request.getParameter("nome"));
 		contato.setFone(request.getParameter("fone"));
 		contato.setEmail(request.getParameter("email"));
-		// Executar o método alterarContato
 		dao.alterarContato(contato);
-		// Encaminhar ao documento editar.jsp atualizando as alterações
 		response.sendRedirect("main");
 	}
 
@@ -174,11 +161,8 @@ public class Controller extends HttpServlet {
 	protected void removerContato(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// Setar a variável JavaBeans
 		contato.setIdcon(request.getParameter("idcon"));
-		// executar o metodo DAO deletarContato
 		dao.deletarContato(contato);
-		// Encaminhar ao documento editar.jsp atualizando as alterações
 		response.sendRedirect("main");
 	}
 
@@ -194,17 +178,12 @@ public class Controller extends HttpServlet {
 			throws ServletException, IOException {
 		Document documento = new Document();
 		try {
-			// tipo de conteúdo
 			response.setContentType("apllication/pdf");
-			// nome do documento
 			response.addHeader("Content-Disposition", "inline; filename=" + "contatos.pdf");
-			// cria o documento
 			PdfWriter.getInstance(documento, response.getOutputStream());
-			// abrir o documento para gerar o conteúdo
 			documento.open();
 			documento.add(new Paragraph("Lista de contatos:"));
 			documento.add(new Paragraph(" "));
-			// criar uma tabela
 			PdfPTable tabela = new PdfPTable(3);
 			PdfPCell col1 = new PdfPCell(new Paragraph("Nome"));
 			PdfPCell col2 = new PdfPCell(new Paragraph("Fone"));
@@ -213,7 +192,6 @@ public class Controller extends HttpServlet {
 			tabela.addCell(col2);
 			tabela.addCell(col3);
 
-			// popular a tabela com os contatos
 			ArrayList<JavaBeans> lista = dao.listarContatos();
 			for (int i = 0; i < lista.size(); i++) {
 				tabela.addCell(lista.get(i).getNome());
